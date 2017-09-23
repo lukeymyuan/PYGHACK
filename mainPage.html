@@ -44,7 +44,7 @@ color: #333;
                         <button class="btn btn-default btn-xs btn-filter"><span class="glyphicon glyphicon-filter"></span> Filter</button>
                     </div>
                 </div>
-                <table class="table">
+                <table class="table" id="tab_logic">
                     <thead>
                         <tr class="filters">
                             <th><input type="text" class="form-control" placeholder="Title" disabled></th>
@@ -54,28 +54,26 @@ color: #333;
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <tr id='addr0'>
                             <td>food</td>
                             <td>Mark</td>
                             <td>Otto</td>
                             <td>@mdo</td>
                         </tr>
-                        <tr>
+                        <tr id='addr1'></tr>
+                        <tr id='addr1'>
                             <td>shirt</td>
                             <td>Jacob</td>
                             <td>Thornton</td>
                             <td>@fat</td>
                         </tr>
-                        <tr>
-                            <td>sunglasses</td>
-                            <td>Larry</td>
-                            <td>the Bird</td>
-                            <td>@twitter</td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
         </div>
+
+            <a id="add_row" class="btn btn-default pull-left">Add Row</a>
+
     </div>
 </body>
 <script>
@@ -119,6 +117,13 @@ $(document).ready(function(){
         if ($filteredRows.length === $rows.length) {
             $table.find('tbody').prepend($('<tr class="no-result text-center"><td colspan="'+ $table.find('.filters th').length +'">No result found</td></tr>'));
         }
+    });
+    var i=2;
+    $("#add_row").click(function(){
+        $('#addr'+i).html("<td><input name='title"+i+"' type='text' placeholder='Title' class='form-control input-md'  /> </td><td><input name='date"+i+"' type='text' placeholder='Date' class='form-control input-md'  /> </td><td><input  name='location"+i+"' type='text' placeholder='Location'  class='form-control input-md'></td><td><input  name='description"+i+"' type='text' placeholder='Description'  class='form-control input-md'></td>");
+
+        $('#tab_logic').append('<tr id="addr'+(i+1)+'"></tr>');
+        i++;
     });
 });
 </script>
