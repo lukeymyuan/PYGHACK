@@ -38,16 +38,12 @@ color: #333;
         <div class="navbar-header">
         <a class="navbar-brand">Free food and swags in Champaign - Urbana</a>
         </div>
-        <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="http://www.bootply.com" target="ext">About</a></li>
-          </ul>
-        </div>
+
 
     </div>
-    <h1 id = "testFirebase">Testing</h1>
+
     <div class="container">
+        <h1 id = "testFirebase">UIUC Free Stuff - Find free food and stuff around campus</h1>
         <div class="row">
             <div class="panel panel-primary filterable">
                 <div class="panel-heading">
@@ -67,29 +63,17 @@ color: #333;
                         </tr>
                     </thead>
                     <tbody>
-                        <tr id='addr0'>
-                            <td>food</td>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                        </tr>
-                        <tr id='addr1'>
-                            <td>shirt</td>
-                            <td>Jacob</td>
-                            <td>Thornton</td>
-                            <td>Otto</td>
-                            <td>@fat</td>
-                        </tr>
-                        <tr id='addr2'></tr>
+                        <tr id='addr0'></tr>
                     </tbody>
                 </table>
             </div>
         </div>
 
+        <!--
         <a id="add_row" class="btn btn-default pull-left">Add Row</a>
         <button type="button" class="btn btn-default pull-right" onclick="confirmAdding()">Submit</button>
         <p id="demo"></p>
+    -->
     </div>
 </body>
 
@@ -105,40 +89,34 @@ color: #333;
         messagingSenderId: "946860562831"
     };
     firebase.initializeApp(config);
-    //Link the attribute to change to an actual html id from html
-    var changAble = document.getElementById('testFirebase');
-    //Reference the "test" directory in the firebase database
-    var dbRef = firebase.database().ref().child('testDataBaseValue');
-    dbRef.on('value', snap => changAble.innerText = snap.val());
 
-    //Setting some data using firebase.database().ref().set()
-    //In this case, we use ref().child("childname").set()
-    firebase.database().ref().child('events/event1').set({
-        Title: "Even 1" ,
-        Date: "09-23-2017",
-        Location : "here",
-        Description: "come to the best event"
-    });
+    //Code for documentation on how to use firebase
+
+    //Link the attribute to change to an actual html id from html
+    //var changAble = document.getElementById('testFirebase');
+    //Reference the "test" directory in the firebase database
+    //var dbRef = firebase.database().ref().child('testDataBaseValue');
+    //dbRef.on('value', snap => changAble.innerText = snap.val());
 
     readData();
-
 
     var ref = firebase.database().ref();
     function readData(){
 
 
-        var playersRef = firebase.database().ref("events");
-
-        playersRef.orderByChild("Date").startAt(0).on("child_added", function(data) {
-            var title, date, time, location, description;
-            title = data.val().Title;
-            date = data.val().Date;
-            time = data.val().Time;
+        var playersRef = firebase.database().ref("eventsNew");
+        var i =1;
+        playersRef.orderByChild("Start Time").on("child_added", function(data) {
+            var title, res, date, time, location, description;
+            title = data.val().Summary;
+            res = data.val()["Start Time"].split("T");
+            date = res[0];
+            time = res[1].split("-")[0];
             location = data.val().Location;
             description = data.val().Description;
-
             var table = document.getElementById("tab_logic");
-            var eventRow = table.insertRow(1);
+
+            var eventRow = table.insertRow(i);
             var cell1 = eventRow.insertCell(0);
             var cell2 = eventRow.insertCell(1);
             var cell3 = eventRow.insertCell(2);
@@ -149,14 +127,13 @@ color: #333;
             cell3.innerHTML = time;
             cell4.innerHTML = location;
             cell5.innerHTML = description;
-            console.log(title, date, time, location, description);
-            console.log("yay");
+            i++;
         });
 
     }
 
     function writeUserData(title, date, time, location, description) {
-        firebase.database().ref('events/' + title).set({
+        firebase.database().ref("eventsNew").push({
             Title: title,
             Date: date,
             Time: time,
@@ -164,9 +141,6 @@ color: #333;
             Description: description
         });
     }
-
-    writeUserData("event2", "09-24-2017", "1:00 pm", "anywhere", "test calling function");
-
 
 
     //var eventRef = firebase.database.ref().child('eventsNew');
@@ -182,13 +156,12 @@ color: #333;
         location = document.getElementById("location"+tempI).value;
         description = document.getElementById("description"+tempI).value;
         writeUserData(title, date, time, location, description);
-        document.getElementById("demo").innerHTML = title;
     }
 </script>
 
 
 <script>
-var i=2;
+var i=0;
 $(document).ready(function(){
     $('.filterable .btn-filter').click(function(){
         var $panel = $(this).parents('.filterable'),
@@ -231,6 +204,7 @@ $(document).ready(function(){
         }
     });
 
+/*
     // add rows to the table
     $("#add_row").click(function(){
         $('#addr'+i).html("<td><input name='title"+i+"' type='text' id = 'title"+i+"' placeholder='Title' class='form-control input-md'  /> </td><td><input name='date"+i+"' type='text' placeholder='Date' id = 'date"+i+"' class='form-control input-md'  /> </td><td><input name='time"+i+"' type='text' id = 'time"+i+"' placeholder='Time' class='form-control input-md'  /> </td><td><input  name='location"+i+"' type='text' id = 'location"+i+"' placeholder='Location'  class='form-control input-md'></td><td><input  name='description"+i+"' type='text' id = 'description"+i+"' placeholder='Description'  class='form-control input-md'></td>");
@@ -238,7 +212,7 @@ $(document).ready(function(){
         $('#tab_logic').append('<tr id="addr'+(i+1)+'"></tr>');
         i++;
     });
-
+*/
 
 });
 </script>
