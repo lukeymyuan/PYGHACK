@@ -18,7 +18,7 @@ db = firebase.database()
 # Initialize calendars to scrape
 CALENDAR_LINK = "http://illinois.edu/calendar/list/"
 
-calendars = ['2622', '5529', '2654', '504', '2835', '2040', '1771']
+calendars = ['2622', '5529', '2568', '2654', '504', '2835', '2040', '1771', '598', '7', '1383', '1905']
 
 for calendar in calendars:
 	calendar_ical = requests.get('http://illinois.edu/calendar/ical/'+calendar+'.ics')
@@ -28,15 +28,14 @@ for calendar in calendars:
 		location = None
 		start_time = None
 		end_time = None
-		summary = None
+		summary = component.decoded("SUMMARY").decode('utf-8')
 		uid = None
 		# initialize strings to check
-		strings = ['free snacks', 'free food', 'pizza', 'lunch on us', 'dish it up', 'food for thought', 'conversation cafe'];
-		if any(s in description.lower() for s in strings):
+		strings = ['free snacks', 'free food', 'pizza', 'lunch on us', 'dish it up', 'food for thought', 'lunch provided'];
+		if any(s in description.lower() + summary.lower() for s in strings):
 			location = component.decoded("LOCATION").decode('utf-8')
 			start_time = component.decoded("DTSTART").isoformat()
 			end_time = component.decoded("DTEND").isoformat()
-			summary = component.decoded("SUMMARY").decode('utf-8')
 			uid = component.decoded("UID").decode('utf-8')
 			data = {
 					"UID": uid,
