@@ -34,9 +34,20 @@ color: #333;
 </style>
 </head>
 <body>
+    <div class="navbar navbar-inverse navbar-static-top">
+        <div class="navbar-header">
+        <a class="navbar-brand">Free food and swags in Champaign - Urbana</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="http://www.bootply.com" target="ext">About</a></li>
+          </ul>
+        </div>
+
+    </div>
     <h1 id = "testFirebase">Testing</h1>
     <div class="container">
-        <h3>Free food and swags in Champaign - Urbana</h3>
         <div class="row">
             <div class="panel panel-primary filterable">
                 <div class="panel-heading">
@@ -50,6 +61,7 @@ color: #333;
                         <tr class="filters">
                             <th><input type="text" class="form-control" placeholder="Title" disabled></th>
                             <th><input type="text" class="form-control" placeholder="Date" disabled></th>
+                            <th><input type="text" class="form-control" placeholder="Time" disabled></th>
                             <th><input type="text" class="form-control" placeholder="Location" disabled></th>
                             <th><input type="text" class="form-control" placeholder="Description" disabled></th>
                         </tr>
@@ -59,25 +71,26 @@ color: #333;
                             <td>food</td>
                             <td>Mark</td>
                             <td>Otto</td>
+                            <td>Otto</td>
                             <td>@mdo</td>
                         </tr>
                         <tr id='addr1'>
                             <td>shirt</td>
                             <td>Jacob</td>
                             <td>Thornton</td>
+                            <td>Otto</td>
                             <td>@fat</td>
                         </tr>
+                        <tr id='addr2'></tr>
                     </tbody>
                 </table>
             </div>
         </div>
 
-            <a id="add_row" class="btn btn-default pull-left">Add Row</a>
-
+        <a id="add_row" class="btn btn-default pull-left">Add Row</a>
+        <button type="button" class="btn btn-default pull-right" onclick="confirAdding">Submit</button>
     </div>
 </body>
-
-<!--TODO: Delete Rows-->
 
 <script src="https://www.gstatic.com/firebasejs/4.4.0/firebase.js"></script>
 <script>
@@ -91,12 +104,15 @@ color: #333;
         messagingSenderId: "946860562831"
     };
     firebase.initializeApp(config);
+    //Link the attribute to change to an actual html id from html
     var changAble = document.getElementById('testFirebase');
-    var dbRef = firebase.database().ref().child('test');
-    firebase.database().ref().child('even' +
-        '' +
-        '' +
-        'ts/event1').set({
+    //Reference the "test" directory in the firebase database
+    var dbRef = firebase.database().ref().child('testDataBaseValue');
+    dbRef.on('value', snap => changAble.innerText = snap.val());
+
+    //Setting some data using firebase.database().ref().set()
+    //In this case, we use ref().child("childname").set()
+    firebase.database().ref().child('events/event1').set({
         Title: "Even 1" ,
         Date: "09-23-2017",
         Location : "here",
@@ -104,21 +120,22 @@ color: #333;
     });
 
 
-    function writeUserData(title, date, location, description) {
+    function writeUserData(title, date, time, location, description) {
         firebase.database().ref('events/' + title).set({
-            title: title,
-            date: date,
-            location: location,
-            description: description
+            Title: title,
+            Date: date,
+            Time: time,
+            Location: location,
+            Description: description
         });
     }
 
-    writeUserData("event2", "09-24-2017", "anywhere", "test calling function");
+    writeUserData("event2", "09-24-2017", "1:00 pm", "anywhere", "test calling function");
 
 
 
     var eventRef = firebase.database.ref().child('events');
-    dbRef.on('value', snap => changAble.innerText = snap.val());
+    eventRef.on('value', snap => changAble.innerText = snap.val());
 </script>
 
 
@@ -164,13 +181,31 @@ $(document).ready(function(){
             $table.find('tbody').prepend($('<tr class="no-result text-center"><td colspan="'+ $table.find('.filters th').length +'">No result found</td></tr>'));
         }
     });
+
+    // add rows to the table
     var i=2;
     $("#add_row").click(function(){
-        $('#addr'+i).html("<td><input name='title"+i+"' type='text' placeholder='Title' class='form-control input-md'  /> </td><td><input name='date"+i+"' type='text' placeholder='Date' class='form-control input-md'  /> </td><td><input  name='location"+i+"' type='text' placeholder='Location'  class='form-control input-md'></td><td><input  name='description"+i+"' type='text' placeholder='Description'  class='form-control input-md'></td>");
+        $('#addr'+i).html("<td><input name='title"+i+"' type='text' placeholder='Title' class='form-control input-md'  /> </td><td><input name='date"+i+"' type='text' placeholder='Date' class='form-control input-md'  /> </td><td><input name='time"+i+"' type='text' placeholder='Time' class='form-control input-md'  /> </td><td><input  name='location"+i+"' type='text' placeholder='Location'  class='form-control input-md'></td><td><input  name='description"+i+"' type='text' placeholder='Description'  class='form-control input-md'></td>");
 
         $('#tab_logic').append('<tr id="addr'+(i+1)+'"></tr>');
         i++;
     });
+
+    // submit the row to the online database
+    function myFunction() {
+        var x, text;
+        // Get the value of the input field with id="numb"
+        x = document.getElementById("numb").value;
+
+        // If x is Not a Number or less than one or greater than 10
+        if (isNaN(x) || x < 1 || x > 10) {
+            text = "Input not valid";
+        } else {
+            text = "Input OK";
+        }
+        document.getElementById("demo").innerHTML = text;
+    }
+
 });
 </script>
 </html>
