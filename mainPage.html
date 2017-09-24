@@ -88,7 +88,8 @@ color: #333;
         </div>
 
         <a id="add_row" class="btn btn-default pull-left">Add Row</a>
-        <button type="button" class="btn btn-default pull-right" onclick="confirAdding">Submit</button>
+        <button type="button" class="btn btn-default pull-right" onclick="confirmAdding()">Submit</button>
+        <p id="demo"></p>
     </div>
 </body>
 
@@ -119,6 +120,40 @@ color: #333;
         Description: "come to the best event"
     });
 
+    readData();
+
+
+    var ref = firebase.database().ref();
+    function readData(){
+
+
+        var playersRef = firebase.database().ref("events");
+
+        playersRef.orderByChild("Date").startAt(0).on("child_added", function(data) {
+            var title, date, time, location, description;
+            title = data.val().Title;
+            date = data.val().Date;
+            time = data.val().Time;
+            location = data.val().Location;
+            description = data.val().Description;
+
+            var table = document.getElementById("tab_logic");
+            var eventRow = table.insertRow(1);
+            var cell1 = eventRow.insertCell(0);
+            var cell2 = eventRow.insertCell(1);
+            var cell3 = eventRow.insertCell(2);
+            var cell4 = eventRow.insertCell(3);
+            var cell5 = eventRow.insertCell(4);
+            cell1.innerHTML = title;
+            cell2.innerHTML = date;
+            cell3.innerHTML = time;
+            cell4.innerHTML = location;
+            cell5.innerHTML = description;
+            console.log(title, date, time, location, description);
+            console.log("yay");
+        });
+
+    }
 
     function writeUserData(title, date, time, location, description) {
         firebase.database().ref('events/' + title).set({
@@ -134,12 +169,26 @@ color: #333;
 
 
 
-    var eventRef = firebase.database.ref().child('events');
-    eventRef.on('value', snap => changAble.innerText = snap.val());
+    //var eventRef = firebase.database.ref().child('eventsNew');
+    //eventRef.on('value', snap => changAble.innerText = snap.val());
+
+    // submit the row to the online database
+    function confirmAdding() {
+        var title, date, time, location, description, tempI;
+        tempI = i-1;
+        title = document.getElementById("title"+tempI).value;
+        date = document.getElementById("date"+tempI).value;
+        time = document.getElementById("time"+tempI).value;
+        location = document.getElementById("location"+tempI).value;
+        description = document.getElementById("description"+tempI).value;
+        writeUserData(title, date, time, location, description);
+        document.getElementById("demo").innerHTML = title;
+    }
 </script>
 
 
 <script>
+var i=2;
 $(document).ready(function(){
     $('.filterable .btn-filter').click(function(){
         var $panel = $(this).parents('.filterable'),
@@ -183,28 +232,13 @@ $(document).ready(function(){
     });
 
     // add rows to the table
-    var i=2;
     $("#add_row").click(function(){
-        $('#addr'+i).html("<td><input name='title"+i+"' type='text' placeholder='Title' class='form-control input-md'  /> </td><td><input name='date"+i+"' type='text' placeholder='Date' class='form-control input-md'  /> </td><td><input name='time"+i+"' type='text' placeholder='Time' class='form-control input-md'  /> </td><td><input  name='location"+i+"' type='text' placeholder='Location'  class='form-control input-md'></td><td><input  name='description"+i+"' type='text' placeholder='Description'  class='form-control input-md'></td>");
+        $('#addr'+i).html("<td><input name='title"+i+"' type='text' id = 'title"+i+"' placeholder='Title' class='form-control input-md'  /> </td><td><input name='date"+i+"' type='text' placeholder='Date' id = 'date"+i+"' class='form-control input-md'  /> </td><td><input name='time"+i+"' type='text' id = 'time"+i+"' placeholder='Time' class='form-control input-md'  /> </td><td><input  name='location"+i+"' type='text' id = 'location"+i+"' placeholder='Location'  class='form-control input-md'></td><td><input  name='description"+i+"' type='text' id = 'description"+i+"' placeholder='Description'  class='form-control input-md'></td>");
 
         $('#tab_logic').append('<tr id="addr'+(i+1)+'"></tr>');
         i++;
     });
 
-    // submit the row to the online database
-    function myFunction() {
-        var x, text;
-        // Get the value of the input field with id="numb"
-        x = document.getElementById("numb").value;
-
-        // If x is Not a Number or less than one or greater than 10
-        if (isNaN(x) || x < 1 || x > 10) {
-            text = "Input not valid";
-        } else {
-            text = "Input OK";
-        }
-        document.getElementById("demo").innerHTML = text;
-    }
 
 });
 </script>
